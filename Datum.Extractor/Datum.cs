@@ -1,3 +1,7 @@
-﻿namespace Datum.Extractor;
+﻿using System.Text.Json.Nodes;
 
-public record Datum;
+namespace Datum.Extractor;
+
+public sealed class Datum(IDictionary<string, JsonNode?> features)
+{
+}
