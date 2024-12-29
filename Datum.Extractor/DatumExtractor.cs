@@ -4,11 +4,11 @@ namespace Datum.Extractor;
 
 public static class DatumExtractor
 {
+    public static string Folder { get; } = "Source/data/".FixPathSeparator();
+
     public static async Task<Datum> ExtractAsync(string version, Edition edition, CancellationToken cancellationToken)
     {
-        const string path = "Source/data/dataPaths.json";
-
-        await using var stream = File.OpenRead(path);
+        await using var stream = File.OpenRead(Path.Join(Folder, "dataPaths.json"));
 
         var parent = await JsonNode.ParseAsync(stream, cancellationToken: cancellationToken);
 
