@@ -2,10 +2,24 @@
 
 namespace Datum.Extractor;
 
+/// <summary>
+/// Provides methods for extracting Minecraft data.
+/// </summary>
 public static class DatumExtractor
 {
+    /// <summary>
+    /// Gets the folder path for the data source.
+    /// </summary>
     public static string Folder { get; } = "Source/data/".FixPathSeparator();
 
+    /// <summary>
+    /// Asynchronously extracts data for the specified version and edition.
+    /// </summary>
+    /// <param name="version">The version of the data.</param>
+    /// <param name="edition">The edition of the data.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous extract operation.</returns>
+    /// <exception cref="DatumException">Thrown when the associated version and edition do not exist.</exception>
     public static async Task<Datum> ExtractAsync(string version, Edition edition, CancellationToken cancellationToken)
     {
         await using var stream = File.OpenRead(Path.Join(Folder, "dataPaths.json"));

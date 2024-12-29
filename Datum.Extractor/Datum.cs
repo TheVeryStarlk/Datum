@@ -3,12 +3,34 @@ using Datum.Extractor.Extractors;
 
 namespace Datum.Extractor;
 
-public sealed class Datum(IDictionary<string, JsonNode?> features)
+/// <summary>
+/// Represents a Datum extractor.
+/// </summary>
+public sealed class Datum
 {
+    private readonly IDictionary<string, JsonNode?> features;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Datum"/> class.
+    /// </summary>
+    /// <param name="features">The dictionary of features.</param>
+    public Datum(IDictionary<string, JsonNode?> features)
+    {
+        this.features = features;
+    }
+
+    /// <summary>
+    /// Gets the protocol.
+    /// </summary>
     public Protocol? Protocol => protocol ??= Extract<Protocol>();
 
     private Protocol? protocol;
 
+    /// <summary>
+    /// Extracts the specified type of extractor.
+    /// </summary>
+    /// <typeparam name="T">The type of the extractor.</typeparam>
+    /// <returns>An instance of the specified extractor type.</returns>
     private T? Extract<T>() where T : IExtractor<T>
     {
         if (!features.TryGetValue(T.Name, out var feature))
