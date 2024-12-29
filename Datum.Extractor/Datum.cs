@@ -5,7 +5,11 @@ namespace Datum.Extractor;
 
 public sealed class Datum(IDictionary<string, JsonNode?> features)
 {
-    public async Task<T?> ExtractAsync<T>(CancellationToken cancellationToken) where T : IExtractor<T>
+    public Protocol? Protocol => protocol ??= Extract<Protocol>();
+
+    private Protocol? protocol;
+
+    private T? Extract<T>() where T : IExtractor<T>
     {
         if (!features.TryGetValue(T.Name, out var feature))
         {
@@ -17,9 +21,9 @@ public sealed class Datum(IDictionary<string, JsonNode?> features)
             .Replace("\"", string.Empty)
             .FixPathSeparator();
 
-        await using var stream = File.OpenRead(Path.Join(DatumExtractor.Folder, clean, $"{T.Name}.json"));
+        using var stream = File.OpenRead(Path.Join(DatumExtractor.Folder, clean, $"{T.Name}.json"));
 
-        var node = await JsonNode.ParseAsync(stream, cancellationToken: cancellationToken);
+        var node = JsonNode.Parse(stream);
 
         return T.Create(node!);
     }
