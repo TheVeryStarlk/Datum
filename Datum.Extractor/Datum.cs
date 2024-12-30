@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using Datum.Extractor.Extractors;
+using Version = Datum.Extractor.Extractors.Version;
 
 namespace Datum.Extractor;
 
@@ -8,6 +9,20 @@ namespace Datum.Extractor;
 /// </summary>
 public sealed class Datum
 {
+    /// <summary>
+    /// Gets the version.
+    /// </summary>
+    public Version? Version => version ??= Extract<Version>();
+
+    private Version? version;
+
+    /// <summary>
+    /// Gets the protocol.
+    /// </summary>
+    public Protocol? Protocol => protocol ??= Extract<Protocol>();
+
+    private Protocol? protocol;
+
     private readonly IDictionary<string, JsonNode?> features;
 
     /// <summary>
@@ -18,13 +33,6 @@ public sealed class Datum
     {
         this.features = features;
     }
-
-    /// <summary>
-    /// Gets the protocol.
-    /// </summary>
-    public Protocol? Protocol => protocol ??= Extract<Protocol>();
-
-    private Protocol? protocol;
 
     /// <summary>
     /// Extracts the specified type of extractor.

@@ -15,7 +15,7 @@ internal sealed class ExtractorTests
     {
         var datum = await DatumExtractor.ExtractAsync("1.8", Edition.Java, CancellationToken.None);
 
-        Assert.That(datum.Protocol, Is.Not.EqualTo(null));
+        Assert.That(datum.Protocol, Is.Not.Null);
 
         Assert.Multiple(() =>
         {
