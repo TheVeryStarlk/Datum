@@ -29,9 +29,9 @@ public sealed record Packet(string Name, Property[] Properties)
                 break;
             }
 
-            var name = packet!.GetPath().Split('.').Last();
+            var name = packet.GetPath().Split('.').Last();
 
-            if (packet[1]! is not JsonArray items)
+            if (name is "packet" || packet[1]! is not JsonArray items)
             {
                 continue;
             }
@@ -49,7 +49,7 @@ public sealed record Packet(string Name, Property[] Properties)
             packets[identifier] = new Packet(name, properties);
         }
 
-        return packets.ToFrozenDictionary();
+        return packets.Count is 0 ? null : packets.ToFrozenDictionary();
     }
 }
 

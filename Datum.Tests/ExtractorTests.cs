@@ -16,8 +16,8 @@ internal sealed class ExtractorTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(datum.Protocol.Server.Configuration, Is.Empty);
-            Assert.That(datum.Protocol.Client.Configuration, Is.Empty);
+            Assert.That(datum.Protocol.Server.Configuration, Is.Null);
+            Assert.That(datum.Protocol.Client.Configuration, Is.Null);
         });
     }
 }

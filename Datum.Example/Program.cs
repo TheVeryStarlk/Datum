@@ -6,6 +6,6 @@ var block = datum.Block;
 
 var air = block!.Blocks[0];
 
-var protocol = datum.Protocol?.Client.Handshake.First();
+var protocol = datum.Protocol?.Server.Handshake;
 
 return;
