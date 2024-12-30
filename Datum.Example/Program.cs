@@ -2,47 +2,102 @@
 using System.Text;
 using Datum.Extractor;
 
+const string source = """
+                          internal interface IBlock
+                          {
+                              /// <summary>
+                              /// Gets the numerical identifier of the block.
+                              /// </summary>
+                              public static abstract int Identifier { get; }
+                          
+                              /// <summary>
+                              /// Gets the friendly name of the block.
+                              /// </summary>
+                              public static abstract string FriendlyName { get; }
+                          
+                              /// <summary>
+                              /// Gets the maximum item stack size of the block.
+                              /// </summary>
+                              public static abstract int StackSize { get; }
+                          
+                              /// <summary>
+                              /// Gets the mining hardness of the block.
+                              /// </summary>
+                              public static abstract float Hardness { get; }
+                          
+                              /// <summary>
+                              /// Gets the block's resistance to explosives.
+                              /// </summary>
+                              public static abstract float Resistance { get; }
+                          
+                              /// <summary>
+                              /// Gets the block's light strength.
+                              /// </summary>
+                              /// <remarks>
+                              /// Blocks that do not emit light have light strength of 0.
+                              /// </remarks>
+                              public static abstract float LightStrength { get; }
+                          
+                              /// <summary>
+                              /// Gets if the block is diggable or not.
+                              /// </summary>
+                              public static abstract bool IsDiggable { get; }
+                          
+                              /// <summary>
+                              /// Gets whether the block is partially or fully transparent.
+                              /// </summary>
+                              public static abstract bool IsTransparent { get; }
+                          }
+                          """;
+
 var datum = await DatumExtractor.ExtractJavaAsync("1.8", CancellationToken.None);
 
-var info = new CultureInfo("en-US", false).TextInfo;
+var builder = new StringBuilder();
 
-foreach (var pair in datum.Protocol!.Server.Play!)
+builder.AppendLine(source);
+builder.AppendLine();
+
+builder.AppendLine("internal abstract class Block");
+builder.AppendLine("{");
+
+var text = new CultureInfo("en_US", false).TextInfo;
+
+foreach (var pair in datum.Block!.Blocks)
 {
-    var packet = pair.Value;
-    var name = $"{info.ToTitleCase(packet.Name[7..].Replace("_", " ")).Replace(" ", "")}Packet";
-    var builder = new StringBuilder();
+    var name = pair.Value.FriendlyName!;
 
-    builder.AppendLine($"internal sealed class {name} : IPacket");
-    builder.AppendLine("{");
-    builder.AppendLine($"    public int Identifier => 0x{pair.Key:X2};");
+    name = text
+        .ToTitleCase(name.Replace("(", " ").Replace(")", ""))
+        .Replace(" ", "")
+        .Replace("'", "")
+        .Replace("/", "");
 
+    builder.AppendLine($"   public sealed class {name} : IBlock");
+    builder.AppendLine("   {");
+
+    var body = $"""
+                       public static int Identifier => {pair.Key};
+               
+                       public static string FriendlyName => "{pair.Value.FriendlyName}";
+               
+                       public static int StackSize => {pair.Value.StackSize};
+               
+                       public static float Hardness => {pair.Value.Hardness}F;
+               
+                       public static float Resistance => {pair.Value.Resistance}F;
+               
+                       public static float LightStrength => {pair.Value.LightStrength}F;
+               
+                       public static bool IsDiggable => {pair.Value.IsDiggable.ToString().ToLower()};
+               
+                       public static bool IsTransparent => {pair.Value.IsTransparent.ToString().ToLower()};
+               """;
+
+    builder.AppendLine(body);
+    builder.AppendLine("   }");
     builder.AppendLine();
-
-    foreach (var property in packet.Properties)
-    {
-        var type = property.Type switch
-        {
-            "varint" => "int",
-            "varlong" => "long",
-            "pstring" or "string" => "string",
-            "u16" => "ushort",
-            "u8" => "byte",
-            "i64" => "long",
-            "buffer" => "ReadOnlyMemory<byte>",
-            "i32" => "int",
-            "i8" => "sbyte",
-            "i16" => "short",
-            "f32" => "float",
-            "f64" => "double",
-            "UUID" => "Guid",
-            "bool" => "bool",
-            _ => info.ToTitleCase(property.Type).Replace("_", "")
-        };
-
-        builder.AppendLine($"    public {type} {info.ToTitleCase(property.Name)} {{ get; set; }}");
-    }
-
-    builder.AppendLine("}");
-
-    Console.WriteLine(builder.ToString());
 }
+
+builder.AppendLine("}");
+
+Console.WriteLine(builder.ToString());

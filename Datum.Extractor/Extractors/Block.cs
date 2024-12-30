@@ -72,8 +72,8 @@ public sealed class Block : IExtractor<Block>
                 var block = new BlockMetadata
                 {
                     Identifier = int.Parse(item!["id"]?.ToString()!),
-                    DisplayName = item["displayName"]?.ToString(),
-                    FriendlyName = item["name"]?.ToString(),
+                    DisplayName = item["name"]?.ToString(),
+                    FriendlyName = item["displayName"]?.ToString(),
                     StackSize = int.TryParse(item["stackSize"]?.ToString(), out var stackSize) ? stackSize : 0,
                     Hardness = float.TryParse(item["hardness"]?.ToString(), out var hardness) ? hardness : 0,
                     Resistance = float.TryParse(item["resistance"]?.ToString(), out var resistance) ? resistance : 0,
