@@ -39,7 +39,7 @@ const string source = """
                               public static abstract float LightStrength { get; }
                           
                               /// <summary>
-                              /// Gets if the block is diggable or not.
+                              /// Gets whether the block is diggable or not.
                               /// </summary>
                               public static abstract bool IsDiggable { get; }
                           
