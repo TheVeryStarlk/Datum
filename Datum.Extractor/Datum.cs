@@ -4,10 +4,7 @@ using Version = Datum.Extractor.Extractors.Version;
 
 namespace Datum.Extractor;
 
-/// <summary>
-/// Represents a Minecraft Datum extractor.
-/// </summary>
-public sealed class Datum
+public abstract class Datum(string folder, IDictionary<string, JsonNode?> features)
 {
     /// <summary>
     /// Gets the version.
@@ -17,34 +14,18 @@ public sealed class Datum
     private Version? version;
 
     /// <summary>
-    /// Gets the protocol.
-    /// </summary>
-    public Protocol? Protocol => protocol ??= Extract<Protocol>();
-
-    private Protocol? protocol;
-
-    /// <summary>
     /// Gets the blocks information.
     /// </summary>
     public Block? Block => block ??= Extract<Block>();
 
     private Block? block;
 
-    private readonly string folder;
-    private readonly IDictionary<string, JsonNode?> features;
-
-    internal Datum(string folder, IDictionary<string, JsonNode?> features)
-    {
-        this.folder = folder;
-        this.features = features;
-    }
-
     /// <summary>
     /// Extracts the specified type of extractor.
     /// </summary>
     /// <typeparam name="T">The type of the extractor.</typeparam>
     /// <returns>An instance of the specified extractor type.</returns>
-    private T? Extract<T>() where T : IExtractor<T>
+    protected T? Extract<T>() where T : IExtractor<T>
     {
         if (!features.TryGetValue(T.Name, out var feature))
         {

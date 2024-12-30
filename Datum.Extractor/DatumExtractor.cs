@@ -7,31 +7,35 @@ namespace Datum.Extractor;
 /// </summary>
 public static class DatumExtractor
 {
-    /// <summary>
-    /// Extracts Minecraft-related information for the specified <paramref name="version"/> and <paramref name="edition"/>.
-    /// </summary>
-    /// <param name="version">The Minecraft's version.</param>
-    /// <param name="edition">The Minecraft's edition, Java or Bedrock.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A <see cref="Task"/> that represents the asynchronous extract operation.</returns>
-    /// <exception cref="DatumException">The associated version and edition do not exist.</exception>
-    public static async Task<Datum> ExtractAsync(string version, Edition edition, CancellationToken cancellationToken)
-    {
-        var folder = "Source/data/".FixPathSeparator();
+    private static readonly string Folder = "Source/data/".FixPathSeparator();
 
-        await using var stream = File.OpenRead(Path.Join(folder, "dataPaths.json"));
+    public static async Task<JavaDatum> ExtractJavaAsync(string version, CancellationToken cancellationToken)
+    {
+        var features = await ExtractAsync(version, "java", cancellationToken);
+
+        return new JavaDatum(Folder, features);
+    }
+
+    public static async Task<BedrockDatum> ExtractBedrockAsync(string version, CancellationToken cancellationToken)
+    {
+        var features = await ExtractAsync(version, "bedrock", cancellationToken);
+
+        return new BedrockDatum(Folder, features);
+    }
+
+    private static async Task<IDictionary<string, JsonNode?>> ExtractAsync(string version, string name, CancellationToken cancellationToken)
+    {
+        await using var stream = File.OpenRead(Path.Join(Folder, "dataPaths.json"));
 
         var parent = await JsonNode.ParseAsync(stream, cancellationToken: cancellationToken);
 
-        var type = parent![edition is Edition.Java ? "pc" : "bedrock"]!.AsObject();
+        var type = parent![name]!.AsObject();
 
         if (!type.ContainsKey(version))
         {
             throw new DatumException("The associated version and edition do not exist.");
         }
 
-        IDictionary<string, JsonNode?> features = type[version]!.AsObject();
-
-        return new Datum(folder, features);
+        return type[version]!.AsObject();
     }
 }
