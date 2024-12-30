@@ -5,10 +5,7 @@ namespace Datum.Tests;
 internal sealed class ExtractorTests
 {
     [Test]
-    public void ThrowsOn_InvalidVersion()
-    {
-        Assert.ThrowsAsync<DatumException>(static async () => await DatumExtractor.ExtractAsync(string.Empty, Edition.Java, CancellationToken.None));
-    }
+    public void ThrowsOn_InvalidVersion() => Assert.ThrowsAsync<DatumException>(static async () => await DatumExtractor.ExtractAsync(string.Empty, Edition.Java, CancellationToken.None));
 
     [Test]
     public async Task Extracts_OldVersionConfiguration_Correctly()

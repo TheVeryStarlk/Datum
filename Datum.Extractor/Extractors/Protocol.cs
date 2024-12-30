@@ -11,13 +11,10 @@ public sealed class Protocol : IExtractor<Protocol>
     /// <summary>
     /// Represents a packet with a name and properties.
     /// </summary>
+    /// <param name="Name">Gets the packet's name.</param>
+    /// <param name="Properties">Gets the packet's properties.</param>
     public sealed record Packet(string Name, Property[] Properties)
     {
-        /// <summary>
-        /// Deserializes the JSON object into a dictionary of packets.
-        /// </summary>
-        /// <param name="types">The JSON object representing the packet types.</param>
-        /// <returns>A frozen dictionary of packets.</returns>
         internal static FrozenDictionary<int, Packet> Extract(JsonObject? types)
         {
             var packets = new Dictionary<int, Packet>();
@@ -55,108 +52,47 @@ public sealed class Protocol : IExtractor<Protocol>
     /// <summary>
     /// Represents a property with a name and type.
     /// </summary>
+    /// <param name="Name">Gets the property's name.</param>
+    /// <param name="Type">Gets the property's value type.</param>
     public sealed record Property(string Name, string Type);
 
     /// <summary>
-    /// Represents the server metadata.
+    /// Represents the packets' direction.
     /// </summary>
-    public sealed class ServerMetadata
+    public sealed class Direction(JsonObject node, string direction)
     {
-        private readonly JsonObject node;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerMetadata"/> class.
-        /// </summary>
-        /// <param name="node">The JSON object representing the server metadata.</param>
-        public ServerMetadata(JsonObject node)
-        {
-            this.node = node;
-        }
-
         /// <summary>
         /// Gets the handshake packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Extract(node["handshaking"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Extract(node["handshaking"]?[direction]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? handshake;
 
         /// <summary>
         /// Gets the status packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Status => status ??= Packet.Extract(node["status"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Status => status ??= Packet.Extract(node["status"]?[direction]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? status;
 
         /// <summary>
         /// Gets the login packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Login => login ??= Packet.Extract(node["login"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Login => login ??= Packet.Extract(node["login"]?[direction]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? login;
 
         /// <summary>
         /// Gets the configuration packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Extract(node["configuration"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Extract(node["configuration"]?[direction]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? configuration;
 
         /// <summary>
         /// Gets the play packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Play => play ??= Packet.Extract(node["play"]?["toClient"]?["types"]?.AsObject());
-
-        private FrozenDictionary<int, Packet>? play;
-    }
-
-    /// <summary>
-    /// Represents the client metadata.
-    /// </summary>
-    public sealed class ClientMetadata
-    {
-        private readonly JsonObject node;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientMetadata"/> class.
-        /// </summary>
-        /// <param name="node">The JSON object representing the client metadata.</param>
-        public ClientMetadata(JsonObject node)
-        {
-            this.node = node;
-        }
-
-        /// <summary>
-        /// Gets the handshake packets.
-        /// </summary>
-        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Extract(node["handshaking"]?["toServer"]?["types"]?.AsObject());
-
-        private FrozenDictionary<int, Packet>? handshake;
-
-        /// <summary>
-        /// Gets the status packets.
-        /// </summary>
-        public FrozenDictionary<int, Packet> Status => status ??= Packet.Extract(node["status"]?["toServer"]?["types"]?.AsObject());
-
-        private FrozenDictionary<int, Packet>? status;
-
-        /// <summary>
-        /// Gets the login packets.
-        /// </summary>
-        public FrozenDictionary<int, Packet> Login => login ??= Packet.Extract(node["login"]?["toServer"]?["types"]?.AsObject());
-
-        private FrozenDictionary<int, Packet>? login;
-
-        /// <summary>
-        /// Gets the configuration packets.
-        /// </summary>
-        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Extract(node["configuration"]?["toServer"]?["types"]?.AsObject());
-
-        private FrozenDictionary<int, Packet>? configuration;
-
-        /// <summary>
-        /// Gets the play packets.
-        /// </summary>
-        public FrozenDictionary<int, Packet> Play => play ??= Packet.Extract(node["play"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Play => play ??= Packet.Extract(node["play"]?[direction]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? play;
     }
@@ -169,35 +105,25 @@ public sealed class Protocol : IExtractor<Protocol>
     /// <summary>
     /// Gets the server metadata.
     /// </summary>
-    public ServerMetadata Server => server ??= new ServerMetadata(node.AsObject());
+    public Direction Server => server ??= new Direction(node.AsObject(), "toClient");
 
-    private ServerMetadata? server;
+    private Direction? server;
 
     /// <summary>
     /// Gets the client metadata.
     /// </summary>
-    public ClientMetadata Client => client ??= new ClientMetadata(node.AsObject());
+    public Direction Client => client ??= new Direction(node.AsObject(), "toServer");
 
-    private ClientMetadata? client;
+    private Direction? client;
 
     private readonly JsonNode node;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Protocol"/> class.
-    /// </summary>
-    /// <param name="node">The JSON node representing the protocol.</param>
-    public Protocol(JsonNode node)
-    {
-        this.node = node;
-    }
+    private Protocol(JsonNode node) => this.node = node;
 
     /// <summary>
     /// Creates a new instance of the <see cref="Protocol"/> class.
     /// </summary>
     /// <param name="node">The JSON node representing the protocol.</param>
     /// <returns>A new instance of the <see cref="Protocol"/> class.</returns>
-    public static Protocol Create(JsonNode node)
-    {
-        return new Protocol(node);
-    }
+    public static Protocol Create(JsonNode node) => new(node);
 }

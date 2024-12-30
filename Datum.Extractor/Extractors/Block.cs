@@ -103,22 +103,12 @@ public sealed class Block : IExtractor<Block>
 
     private readonly JsonNode node;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Block"/> class.
-    /// </summary>
-    /// <param name="node">The JSON node representing the block.</param>
-    public Block(JsonNode node)
-    {
-        this.node = node;
-    }
+    private Block(JsonNode node) => this.node = node;
 
     /// <summary>
     /// Creates an instance of the <see cref="Block"/> class from a JSON node.
     /// </summary>
     /// <param name="node">The JSON node representing the block.</param>
     /// <returns>An instance of the <see cref="Block"/> class.</returns>
-    public static Block Create(JsonNode node)
-    {
-        return new Block(node);
-    }
+    public static Block Create(JsonNode node) => new(node);
 }

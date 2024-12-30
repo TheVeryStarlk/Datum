@@ -32,14 +32,7 @@ public sealed class Datum
 
     private readonly IDictionary<string, JsonNode?> features;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Datum"/> class.
-    /// </summary>
-    /// <param name="features">The dictionary of features.</param>
-    public Datum(IDictionary<string, JsonNode?> features)
-    {
-        this.features = features;
-    }
+    internal Datum(IDictionary<string, JsonNode?> features) => this.features = features;
 
     /// <summary>
     /// Extracts the specified type of extractor.

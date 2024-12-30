@@ -9,7 +9,7 @@ var air = block!.Blocks[0];
 var protocol = datum.Protocol;
 
 var server = protocol!.Server;
-
+var client = protocol.Client;
 var count = protocol.Server.Play.Count;
 
 var play = server.Play.FirstOrDefault(packet => packet.Key is 0x00);

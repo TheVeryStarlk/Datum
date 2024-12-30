@@ -32,13 +32,10 @@ public sealed class Version : IExtractor<Version>
     /// </summary>
     /// <param name="node">The JSON node representing the version.</param>
     /// <returns>An instance of the <see cref="Version"/> class.</returns>
-    public static Version Create(JsonNode node)
+    public static Version Create(JsonNode node) => new()
     {
-        return new Version
-        {
-            Number = int.Parse(node["version"]!.ToString()),
-            Major = node["majorVersion"]!.ToString(),
-            Named = node["minecraftVersion"]!.ToString()
-        };
-    }
+        Number = int.Parse(node["version"]!.ToString()),
+        Major = node["majorVersion"]!.ToString(),
+        Named = node["minecraftVersion"]!.ToString()
+    };
 }
