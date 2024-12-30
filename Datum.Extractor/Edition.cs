@@ -5,6 +5,5 @@
 /// </summary>
 public enum Edition
 {
-    Java,
-    Bedrock
+    Java
 }
