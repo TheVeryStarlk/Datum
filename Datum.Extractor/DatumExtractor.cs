@@ -7,10 +7,7 @@ namespace Datum.Extractor;
 /// </summary>
 public static class DatumExtractor
 {
-    /// <summary>
-    /// Gets the folder path for the data source.
-    /// </summary>
-    public static string Folder { get; } = "Source/data/".FixPathSeparator();
+    internal static string Folder { get; } = "Source/data/".FixPathSeparator();
 
     /// <summary>
     /// Asynchronously extracts data for the specified version and edition.
