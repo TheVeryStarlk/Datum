@@ -8,17 +8,6 @@ namespace Datum.Extractor.Extractors;
 /// </summary>
 public sealed class Protocol : IExtractor<Protocol>
 {
-    private readonly JsonNode node;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Protocol"/> class.
-    /// </summary>
-    /// <param name="node">The JSON node representing the protocol.</param>
-    public Protocol(JsonNode node)
-    {
-        this.node = node;
-    }
-
     /// <summary>
     /// Represents a packet with a name and properties.
     /// </summary>
@@ -29,7 +18,7 @@ public sealed class Protocol : IExtractor<Protocol>
         /// </summary>
         /// <param name="types">The JSON object representing the packet types.</param>
         /// <returns>A frozen dictionary of packets.</returns>
-        internal static FrozenDictionary<int, Packet> Deserialize(JsonObject? types)
+        internal static FrozenDictionary<int, Packet> Extract(JsonObject? types)
         {
             var packets = new Dictionary<int, Packet>();
 
@@ -87,35 +76,35 @@ public sealed class Protocol : IExtractor<Protocol>
         /// <summary>
         /// Gets the handshake packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Deserialize(node["handshaking"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Extract(node["handshaking"]?["toClient"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? handshake;
 
         /// <summary>
         /// Gets the status packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Status => status ??= Packet.Deserialize(node["status"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Status => status ??= Packet.Extract(node["status"]?["toClient"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? status;
 
         /// <summary>
         /// Gets the login packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Login => login ??= Packet.Deserialize(node["login"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Login => login ??= Packet.Extract(node["login"]?["toClient"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? login;
 
         /// <summary>
         /// Gets the configuration packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Deserialize(node["configuration"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Extract(node["configuration"]?["toClient"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? configuration;
 
         /// <summary>
         /// Gets the play packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Play => play ??= Packet.Deserialize(node["play"]?["toClient"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Play => play ??= Packet.Extract(node["play"]?["toClient"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? play;
     }
@@ -139,35 +128,35 @@ public sealed class Protocol : IExtractor<Protocol>
         /// <summary>
         /// Gets the handshake packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Deserialize(node["handshaking"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Handshake => handshake ??= Packet.Extract(node["handshaking"]?["toServer"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? handshake;
 
         /// <summary>
         /// Gets the status packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Status => status ??= Packet.Deserialize(node["status"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Status => status ??= Packet.Extract(node["status"]?["toServer"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? status;
 
         /// <summary>
         /// Gets the login packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Login => login ??= Packet.Deserialize(node["login"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Login => login ??= Packet.Extract(node["login"]?["toServer"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? login;
 
         /// <summary>
         /// Gets the configuration packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Deserialize(node["configuration"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Configuration => configuration ??= Packet.Extract(node["configuration"]?["toServer"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? configuration;
 
         /// <summary>
         /// Gets the play packets.
         /// </summary>
-        public FrozenDictionary<int, Packet> Play => play ??= Packet.Deserialize(node["play"]?["toServer"]?["types"]?.AsObject());
+        public FrozenDictionary<int, Packet> Play => play ??= Packet.Extract(node["play"]?["toServer"]?["types"]?.AsObject());
 
         private FrozenDictionary<int, Packet>? play;
     }
@@ -190,6 +179,17 @@ public sealed class Protocol : IExtractor<Protocol>
     public ClientMetadata Client => client ??= new ClientMetadata(node.AsObject());
 
     private ClientMetadata? client;
+
+    private readonly JsonNode node;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Protocol"/> class.
+    /// </summary>
+    /// <param name="node">The JSON node representing the protocol.</param>
+    public Protocol(JsonNode node)
+    {
+        this.node = node;
+    }
 
     /// <summary>
     /// Creates a new instance of the <see cref="Protocol"/> class.

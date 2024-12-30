@@ -23,6 +23,13 @@ public sealed class Datum
 
     private Protocol? protocol;
 
+    /// <summary>
+    /// Gets the blocks information.
+    /// </summary>
+    public Block? Block => block ??= Extract<Block>();
+
+    private Block? block;
+
     private readonly IDictionary<string, JsonNode?> features;
 
     /// <summary>

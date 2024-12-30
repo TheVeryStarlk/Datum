@@ -2,7 +2,9 @@
 
 var datum = await DatumExtractor.ExtractAsync("1.8", Edition.Java, CancellationToken.None);
 
-var b= datum.Version;
+var block = datum.Block;
+
+var air = block!.Blocks[0];
 
 var protocol = datum.Protocol;
 
