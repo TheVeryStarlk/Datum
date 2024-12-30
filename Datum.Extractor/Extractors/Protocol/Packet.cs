@@ -10,18 +10,25 @@ namespace Datum.Extractor.Extractors.Protocol;
 /// <param name="Properties">Gets the packet's properties.</param>
 public sealed record Packet(string Name, Property[] Properties)
 {
-    internal static FrozenDictionary<int, Packet>? Java(JsonObject? types)
+    internal static FrozenDictionary<int, Packet>? Extract(JsonObject? types)
     {
-        var packets = new Dictionary<int, Packet>();
-
         if (types is null)
         {
             return null;
         }
 
-        for (var identifier = 0; identifier < types.Count - 1; identifier++)
+        var packets = new Dictionary<int, Packet>();
+
+        for (var identifier = types.Count - 1; identifier >= 0; identifier--)
         {
             var packet = types[identifier];
+
+            // We reached the types section, no more packets, exit.
+            if (packet!.ToString() is "native")
+            {
+                break;
+            }
+
             var name = packet!.GetPath().Split('.').Last();
 
             if (packet[1]! is not JsonArray items)
@@ -34,7 +41,9 @@ public sealed record Packet(string Name, Property[] Properties)
             for (var index = 0; index < items.Count; index++)
             {
                 var item = items[index];
-                properties[index] = new Property(item![0]!.ToString(), item[1]!.ToString());
+                var type = item![1] is JsonValue ? item[1]!.ToString() : item[0]!.ToString();
+
+                properties[index] = new Property(item[0]!.ToString(), type);
             }
 
             packets[identifier] = new Packet(name, properties);
@@ -42,8 +51,6 @@ public sealed record Packet(string Name, Property[] Properties)
 
         return packets.ToFrozenDictionary();
     }
-
-    internal static FrozenDictionary<int, Packet>? Bedrock(JsonObject? types) => null;
 }
 
 /// <summary>

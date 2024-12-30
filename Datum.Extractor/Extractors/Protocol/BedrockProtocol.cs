@@ -7,7 +7,7 @@ public sealed class BedrockProtocol : IProtocol<BedrockProtocol>
 {
     public static string Name => "protocol";
 
-    public FrozenDictionary<int, Packet>? Packets => packets ??= Packet.Bedrock(node.AsObject());
+    public FrozenDictionary<int, Packet>? Packets => packets ??= Packet.Extract(node["types"]?.AsObject());
 
     private FrozenDictionary<int, Packet>? packets;
 

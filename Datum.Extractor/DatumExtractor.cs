@@ -11,7 +11,7 @@ public static class DatumExtractor
 
     public static async Task<JavaDatum> ExtractJavaAsync(string version, CancellationToken cancellationToken)
     {
-        var features = await ExtractAsync(version, "java", cancellationToken);
+        var features = await ExtractAsync(version, "pc", cancellationToken);
 
         return new JavaDatum(Folder, features);
     }
