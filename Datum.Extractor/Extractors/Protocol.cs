@@ -97,9 +97,7 @@ public sealed class Protocol : IExtractor<Protocol>
         private FrozenDictionary<int, Packet>? play;
     }
 
-    /// <summary>
-    /// Gets the name of the protocol.
-    /// </summary>
+    /// <inheritdoc cref="IExtractor{T}.Name"/>
     public static string Name => "protocol";
 
     /// <summary>

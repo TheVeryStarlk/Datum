@@ -7,9 +7,7 @@ namespace Datum.Extractor.Extractors;
 /// </summary>
 public sealed class Version : IExtractor<Version>
 {
-    /// <summary>
-    /// Gets the name of the version extractor.
-    /// </summary>
+    /// <inheritdoc cref="IExtractor{T}.Name"/>
     public static string Name => "version";
 
     /// <summary>

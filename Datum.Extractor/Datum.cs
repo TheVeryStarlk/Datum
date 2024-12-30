@@ -5,7 +5,7 @@ using Version = Datum.Extractor.Extractors.Version;
 namespace Datum.Extractor;
 
 /// <summary>
-/// Represents a Datum extractor.
+/// Represents a Minecraft Datum extractor.
 /// </summary>
 public sealed class Datum
 {

@@ -89,9 +89,7 @@ public sealed class Block : IExtractor<Block>
         }
     }
 
-    /// <summary>
-    /// Gets the name of the block extractor.
-    /// </summary>
+    /// <inheritdoc cref="IExtractor{T}.Name"/>
     public static string Name => "blocks";
 
     /// <summary>

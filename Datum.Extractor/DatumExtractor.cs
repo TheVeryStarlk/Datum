@@ -3,18 +3,18 @@
 namespace Datum.Extractor;
 
 /// <summary>
-/// Provides methods for extracting Minecraft data.
+/// Provides ways to extract Minecraft information.
 /// </summary>
 public static class DatumExtractor
 {
     /// <summary>
-    /// Asynchronously extracts data for the specified version and edition.
+    /// Extracts Minecraft-related information for the specified <paramref name="version"/> and <paramref name="edition"/>.
     /// </summary>
-    /// <param name="version">The version of the data.</param>
-    /// <param name="edition">The edition of the data.</param>
+    /// <param name="version">The Minecraft's version.</param>
+    /// <param name="edition">The Minecraft's edition, Java or Bedrock.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous extract operation.</returns>
-    /// <exception cref="DatumException">Thrown when the associated version and edition do not exist.</exception>
+    /// <exception cref="DatumException">The associated version and edition do not exist.</exception>
     public static async Task<Datum> ExtractAsync(string version, Edition edition, CancellationToken cancellationToken)
     {
         var folder = "Source/data/".FixPathSeparator();

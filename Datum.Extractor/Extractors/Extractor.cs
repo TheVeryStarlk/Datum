@@ -9,7 +9,7 @@ namespace Datum.Extractor.Extractors;
 public interface IExtractor<out T> where T : IExtractor<T>
 {
     /// <summary>
-    /// Gets the name of the extractor.
+    /// Gets the name of the source file.
     /// </summary>
     public static abstract string Name { get; }
 
