@@ -8,7 +8,7 @@ You can see Datum's API in the [example](https://github.com/TheVeryStarlk/Datum/
 ```csharp
 using Datum.Extractor;
 
-var datum = await DatumExtractor.ExtractAsync("1.8", Edition.Java, CancellationToken.None);
+var datum = await DatumExtractor.ExtractJavaAsync("1.8", Edition.Java, CancellationToken.None);
 
 var block = datum.Block;
 var air = block!.Blocks.First();
