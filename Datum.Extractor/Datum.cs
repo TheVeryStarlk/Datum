@@ -30,9 +30,14 @@ public sealed class Datum
 
     private Block? block;
 
+    private readonly string folder;
     private readonly IDictionary<string, JsonNode?> features;
 
-    internal Datum(IDictionary<string, JsonNode?> features) => this.features = features;
+    internal Datum(string folder, IDictionary<string, JsonNode?> features)
+    {
+        this.folder = folder;
+        this.features = features;
+    }
 
     /// <summary>
     /// Extracts the specified type of extractor.
@@ -51,7 +56,7 @@ public sealed class Datum
             .Replace("\"", string.Empty)
             .FixPathSeparator();
 
-        using var stream = File.OpenRead(Path.Join(DatumExtractor.Folder, clean, $"{T.Name}.json"));
+        using var stream = File.OpenRead(Path.Join(folder, clean, $"{T.Name}.json"));
 
         var node = JsonNode.Parse(stream);
 

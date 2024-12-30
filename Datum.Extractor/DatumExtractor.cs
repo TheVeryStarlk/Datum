@@ -7,8 +7,6 @@ namespace Datum.Extractor;
 /// </summary>
 public static class DatumExtractor
 {
-    internal static string Folder { get; } = "Source/data/".FixPathSeparator();
-
     /// <summary>
     /// Asynchronously extracts data for the specified version and edition.
     /// </summary>
@@ -19,7 +17,9 @@ public static class DatumExtractor
     /// <exception cref="DatumException">Thrown when the associated version and edition do not exist.</exception>
     public static async Task<Datum> ExtractAsync(string version, Edition edition, CancellationToken cancellationToken)
     {
-        await using var stream = File.OpenRead(Path.Join(Folder, "dataPaths.json"));
+        var folder = "Source/data/".FixPathSeparator();
+
+        await using var stream = File.OpenRead(Path.Join(folder, "dataPaths.json"));
 
         var parent = await JsonNode.ParseAsync(stream, cancellationToken: cancellationToken);
 
@@ -32,6 +32,6 @@ public static class DatumExtractor
 
         IDictionary<string, JsonNode?> features = type[version]!.AsObject();
 
-        return new Datum(features);
+        return new Datum(folder, features);
     }
 }
